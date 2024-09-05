@@ -28,5 +28,7 @@ userRouter.route("/register").post(
 userRouter.route("/login").post(loginUser);
 userRouter.route("/logout").post(verifyJWT, logoutUser);
 userRouter.route("/refresh-token").post(refreshAccessToken);
+userRouter.route("/change-password").post(verifyJWT, logoutUser);
+userRouter.route("/get-current-user").get(verifyJWT, logoutUser);
 
 export default userRouter;
