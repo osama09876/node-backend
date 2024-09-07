@@ -143,8 +143,8 @@ const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: undefined,
+      $unset: {
+        refreshToken: 1,
       },
     },
     {
@@ -178,9 +178,15 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       process.env.REFRESH_TOKEN_SECRET_KEY
     );
     const user = await User.findById(verifyJWT?._id);
+    // console.log(user["username"]);
+    
     if (!user) {
       throw new ApiError(401, "Invalid refresh token");
     }
+    console.log(user["refreshToken"]);
+    console.log(incomingRefreshToken);
+    
+    
     if (incomingRefreshToken !== user?.refreshToken) {
       throw new ApiError(401, "Refresh token is expired or used");
     }
@@ -214,7 +220,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { currentPassword, newPassword } = req.body;
-  const user = User.findById(req.user?._id);
+  const user =await User.findById(req.user?._id);
+
   const checkOldPassword = await user.isPasswordCorrect(currentPassword);
   if (!checkOldPassword) {
     throw new ApiError(401, "Password is incorrect");
@@ -285,16 +292,20 @@ const updateCoverImage = asyncHandler(async (req, res) => {
 
 const getUserChannelDetails = asyncHandler(async (req, res) => {
   const { username } = req.params;
+  // console.log(username);
+
   if (!username?.trim()) {
     throw new ApiError(400, "User not found");
   }
+  // console.log(username);
+  
   const channel = await User.aggregate([
     {
       $match: { username: username?.toLowerCase() },
     },
     {
       $lookup: {
-        from: "subscriptions",
+        from: "subscriptions  ",
         localField: "_id",
         foreignField: "channel",
         as: "subscribers",
@@ -316,12 +327,12 @@ const getUserChannelDetails = asyncHandler(async (req, res) => {
         channelSubscribedToCount: {
           $size: "$subscribedTo",
         },
-      },
-      isSubscribed: {
-        $cond: {
-          if: { $in: [req.user?._id, "$subscribers.subscriber"] },
-          then: true,
-          else: false,
+        isSubscribed: {
+          $cond: {
+            if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+            then: true,
+            else: false,
+          },
         },
       },
     },
@@ -354,7 +365,7 @@ const getUserWatchHistory = asyncHandler(async (req, res) => {
   const user = await User.aggregate([
     {
       $match: {
-        _id: mongoose.Types.ObjectId(req.user._id),
+        _id:new mongoose.Types.ObjectId(req.user._id),
       },
     },
     {
@@ -393,10 +404,15 @@ const getUserWatchHistory = asyncHandler(async (req, res) => {
     },
   ]);
 
-  res.status(200)
+  res
+    .status(200)
     .json(
-     new ApiResponse(200, user[0].watchHistory, "User watch history fetched successfully")
-  )
+      new ApiResponse(
+        200,
+        user[0].watchHistory,
+        "User watch history fetched successfully"
+      )
+    );
 });
 
 export {
@@ -410,5 +426,5 @@ export {
   updateAvatar,
   updateCoverImage,
   getUserChannelDetails,
-  getUserWatchHistory
+  getUserWatchHistory,
 };

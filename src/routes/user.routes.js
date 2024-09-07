@@ -14,8 +14,6 @@ import {
 } from "../controller/user.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
-import { verify } from "jsonwebtoken";
-// import { ApiError } from "../utils/apiError.js";
 
 const userRouter = Router();
 
@@ -46,6 +44,7 @@ userRouter
   .route("/cover-image")
   .patch(verifyJWT, upload.single("coverImage"), updateCoverImage);
 
+// userRouter.route("/c/:username").get(verifyJWT, getUserChannelDetails);
 userRouter.route("/c/:username").get(verifyJWT, getUserChannelDetails);
 userRouter.route("/history").get(verifyJWT, getUserWatchHistory);
 
