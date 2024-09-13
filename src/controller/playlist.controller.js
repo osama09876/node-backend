@@ -1,26 +1,51 @@
 import mongoose, { isValidObjectId } from "mongoose";
-import { Like } from "../models/like.model.js";
+import { PlayList } from "../models/playlist.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-const toggleVideoLike = asyncHandler(async (req, res) => {
-  const { videoId } = req.params;
-  //TODO: toggle like on video
+const createPlaylist = asyncHandler(async (req, res) => {
+  const { name, description } = req.body;
+
+  //TODO: create playlist
 });
 
-const toggleCommentLike = asyncHandler(async (req, res) => {
-  const { commentId } = req.params;
-  //TODO: toggle like on comment
+const getUserPlaylists = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  //TODO: get user playlists
 });
 
-const toggleTweetLike = asyncHandler(async (req, res) => {
-  const { tweetId } = req.params;
-  //TODO: toggle like on tweet
+const getPlaylistById = asyncHandler(async (req, res) => {
+  const { playlistId } = req.params;
+  //TODO: get playlist by id
 });
 
-const getLikedVideos = asyncHandler(async (req, res) => {
-  //TODO: get all liked videos
+const addVideoToPlaylist = asyncHandler(async (req, res) => {
+  const { playlistId, videoId } = req.params;
 });
 
-export { toggleCommentLike, toggleTweetLike, toggleVideoLike, getLikedVideos };
+const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
+  const { playlistId, videoId } = req.params;
+  // TODO: remove video from playlist
+});
+
+const deletePlaylist = asyncHandler(async (req, res) => {
+  const { playlistId } = req.params;
+  // TODO: delete playlist
+});
+
+const updatePlaylist = asyncHandler(async (req, res) => {
+  const { playlistId } = req.params;
+  const { name, description } = req.body;
+  //TODO: update playlist
+});
+
+export {
+  createPlaylist,
+  getUserPlaylists,
+  getPlaylistById,
+  addVideoToPlaylist,
+  removeVideoFromPlaylist,
+  deletePlaylist,
+  updatePlaylist,
+};

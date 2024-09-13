@@ -1,8 +1,10 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.model.js";
 import { uploadToCloudinary } from "../utils/cloudnary.js";
-import ApiResponse from "../utils/apiResponse.js";
-import { ApiError } from "../utils/apiError.js";
+// import { ApiResponse } from "../utils/apiResponse.js";
+// import { ApiError } from "../utils/apiError.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
@@ -179,14 +181,13 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     );
     const user = await User.findById(verifyJWT?._id);
     // console.log(user["username"]);
-    
+
     if (!user) {
       throw new ApiError(401, "Invalid refresh token");
     }
     console.log(user["refreshToken"]);
     console.log(incomingRefreshToken);
-    
-    
+
     if (incomingRefreshToken !== user?.refreshToken) {
       throw new ApiError(401, "Refresh token is expired or used");
     }
@@ -220,7 +221,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { currentPassword, newPassword } = req.body;
-  const user =await User.findById(req.user?._id);
+  const user = await User.findById(req.user?._id);
 
   const checkOldPassword = await user.isPasswordCorrect(currentPassword);
   if (!checkOldPassword) {
@@ -298,7 +299,7 @@ const getUserChannelDetails = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User not found");
   }
   // console.log(username);
-  
+
   const channel = await User.aggregate([
     {
       $match: { username: username?.toLowerCase() },
@@ -322,6 +323,7 @@ const getUserChannelDetails = asyncHandler(async (req, res) => {
     {
       $addFields: {
         subscribersCount: {
+          
           $size: "$subscribers",
         },
         channelSubscribedToCount: {
@@ -365,7 +367,7 @@ const getUserWatchHistory = asyncHandler(async (req, res) => {
   const user = await User.aggregate([
     {
       $match: {
-        _id:new mongoose.Types.ObjectId(req.user._id),
+        _id: new mongoose.Types.ObjectId(req.user._id),
       },
     },
     {

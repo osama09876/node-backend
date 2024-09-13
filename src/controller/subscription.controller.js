@@ -1,26 +1,23 @@
 import mongoose, { isValidObjectId } from "mongoose";
-import { Like } from "../models/likes.model.js";
+import { User } from "../models/user.model.js";
+import { Subscription } from "../models/subscription.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-const toggleVideoLike = asyncHandler(async (req, res) => {
-  const { videoId } = req.params;
-  //TODO: toggle like on video
+const toggleSubscription = asyncHandler(async (req, res) => {
+  const { channelId } = req.params;
+  // TODO: toggle subscription
 });
 
-const toggleCommentLike = asyncHandler(async (req, res) => {
-  const { commentId } = req.params;
-  //TODO: toggle like on comment
+// controller to return subscriber list of a channel
+const getUserChannelSubscribers = asyncHandler(async (req, res) => {
+  const { channelId } = req.params;
 });
 
-const toggleTweetLike = asyncHandler(async (req, res) => {
-  const { tweetId } = req.params;
-  //TODO: toggle like on tweet
+// controller to return channel list to which user has subscribed
+const getSubscribedChannels = asyncHandler(async (req, res) => {
+  const { subscriberId } = req.params;
 });
 
-const getLikedVideos = asyncHandler(async (req, res) => {
-  //TODO: get all liked videos
-});
-
-export { toggleCommentLike, toggleTweetLike, toggleVideoLike, getLikedVideos };
+export { toggleSubscription, getUserChannelSubscribers, getSubscribedChannels };
